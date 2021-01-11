@@ -3,6 +3,7 @@ from dearpygui.simple import *
 import numpy as np
 from Table_API import *
 from assembler_and_solver import *
+import webbrowser
 
 '''def print_test(sender, data):
     for i in range(get_value("Number of elements")):
@@ -213,7 +214,7 @@ def run_checks_and_solve(sender, data):
 
             node = 1
             for i in range(0, len(F_M_result), 2):
-                add_row("Results table", [str(node), str(F_M_result[i][0]), str(F_M_result[i+1][0]), str(Q_result[i][0]), str(Q_result[i+1][0])])
+                add_row("Results table", [str(node), f"{F_M_result[i][0]:.5}", f"{F_M_result[i+1][0]:.5}", f"{Q_result[i][0]:.5}", f"{Q_result[i+1][0]:.5}"])
                 node += 1
             del node
 
@@ -329,6 +330,15 @@ def add_moment_table():
 
 def close_confirmation(sender, data):
     close_popup("Confirmation Window")
+
+
+def close_info_window(sender, data):
+    if sender == "OK":
+        close_popup("Information window")
+
+    else:
+        close_popup("Information window")
+        webbrowser.open("https://github.com/RahulShagri/1D-Beam-Element-2-DOF-FEM-Solver")
 
 
 def switch_theme(sender, data):
@@ -545,6 +555,23 @@ with window("Extras", x_pos=1230, y_pos=10, no_resize=True, no_move=True, no_col
     add_separator()
     add_spacing()
     add_image_button("dark_mode", "icons/dark_mode.png", width=23, height=23, tip="Dark mode", callback=switch_theme)
+
+    add_popup("Help", "Information window", modal=True, mousebutton=mvMouseButton_Left)
+    add_spacing(count=5)
+    add_text("  ->  All forces acting downwards are -ve")
+    add_spacing(count=2)
+    add_text("  ->  All forces acting upwards are +ve.")
+    add_spacing(count=2)
+    add_separator()
+    add_spacing(count=2)
+    add_text("  ->  All moments acting clockwise are -ve")
+    add_spacing(count=2)
+    add_text("  ->  All moments acting anti-clockwise are +ve.")
+    add_spacing(count=5)
+    add_button("OK", width=100, callback=close_info_window)
+    add_same_line(spacing=5)
+    add_button("Get more info on GitHub", width=250, callback=close_info_window)
+    add_spacing(count=2)
 
 
 start_dearpygui(primary_window="Main")
