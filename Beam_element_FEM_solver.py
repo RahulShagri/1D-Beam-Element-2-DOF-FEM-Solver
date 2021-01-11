@@ -5,12 +5,6 @@ from Table_API import *
 from assembler_and_solver import *
 import webbrowser
 
-'''def print_test(sender, data):
-    for i in range(get_value("Number of elements")):
-        for j in range(4):
-            print(get_value(f"##material_table_{i}_{j}"))'''
-
-
 def run_checks_and_solve(sender, data):
     close_popup("Confirmation Window")
     clear_log(logger="log")
@@ -22,21 +16,21 @@ def run_checks_and_solve(sender, data):
 
     elements = get_value("Number of elements")
 
-    #-------Check material properties---------#
+    # -------Check material properties---------#
     E_val = np.zeros(elements)
     I_val = np.zeros(elements)
     L_val = np.zeros(elements)
 
-    if get_value("same_mat") == True:  # solve for uniform
+    if get_value("same_mat"):  # solve for uniform
 
         try:
-            E_val = np.full((elements), float(get_value("##material_table_0_1")))
+            E_val = np.full(elements, float(get_value("##material_table_0_1")))
             log_info("E values: OK", logger="log")
         except:
             log_error("Please enter a valid value for E in the Element No. 1 row.", logger="log")
             flag = 1
         try:
-            I_val = np.full((elements), float(get_value("##material_table_0_2")))
+            I_val = np.full(elements, float(get_value("##material_table_0_2")))
             log_info("I values: OK", logger="log")
         except:
             log_error("Please enter a valid value for I in the Element No. 1 row.", logger="log")
@@ -55,8 +49,6 @@ def run_checks_and_solve(sender, data):
 
     else:  # solve for non-uniform
         try:
-            #E_val = np.zeros(elements)
-
             for i in range(elements):
                 E_val[i] = float(get_value(f"##material_table_{i}_1"))
 
@@ -66,8 +58,6 @@ def run_checks_and_solve(sender, data):
             flag = 1
 
         try:
-            #I_val = np.zeros(elements)
-
             for i in range(elements):
                 I_val[i] = float(get_value(f"##material_table_{i}_2"))
 
@@ -77,8 +67,6 @@ def run_checks_and_solve(sender, data):
             flag = 1
 
         try:
-            #L_val = np.zeros(elements)
-
             for i in range(elements):
                 L_val[i] = float(get_value(f"##material_table_{i}_3"))
 
@@ -87,19 +75,19 @@ def run_checks_and_solve(sender, data):
             log_error("Please enter valid values for L.", logger="log")
             flag = 1
 
-    #-------------------------------------------------#
+    # -------------------------------------------------#
 
-    #----------Check displacement constraints---------#
-    Q_val = np.zeros((elements+1, 2))
+    # ----------Check displacement constraints---------#
+    Q_val = np.zeros((elements + 1, 2))
 
-    for i in range(elements+1):
+    for i in range(elements + 1):
 
         d = get_value(f"##displacement_table_{i}_{1}")
-        if d == False:
+        if not d:
             Q_val[i][0] = 1
 
         r = get_value(f"##displacement_table_{i}_{2}")
-        if r == False:
+        if not r:
             Q_val[i][1] = 1
 
     if np.all(Q_val == 1):
@@ -109,9 +97,9 @@ def run_checks_and_solve(sender, data):
     else:
         log_info("Displacement constraints: OK", logger="log")
 
-    #-------------------------------------------#
+    # -------------------------------------------#
 
-    #--------Check UDL Force----------------------#
+    # --------Check UDL Force----------------------#
     UDL_val = np.zeros(elements)
 
     try:
@@ -128,12 +116,12 @@ def run_checks_and_solve(sender, data):
         log_error("Please enter valid values for UDL.", logger="log")
         flag = 1
 
-    #--------------------------------------------#
+    # --------------------------------------------#
     # --------Check UVL Force----------------------#
-    UVL_val = np.zeros(elements*2)
+    UVL_val = np.zeros(elements * 2)
 
     try:
-        for i in range(elements*2):
+        for i in range(elements * 2):
 
             if get_value(f"##UVL_table_{i}_2") == "":
                 continue
@@ -149,10 +137,10 @@ def run_checks_and_solve(sender, data):
 
     # --------------------------------------------#
     # --------Check Point Force----------------------#
-    point_force_val = np.zeros(elements+1)
+    point_force_val = np.zeros(elements + 1)
 
     try:
-        for i in range(elements+1):
+        for i in range(elements + 1):
             if get_value(f"##point_load_table_{i}_1") == "":
                 continue
 
@@ -192,15 +180,13 @@ def run_checks_and_solve(sender, data):
         log_info("All values have been checked and are valid.", logger="log")
         log_info("Solving...", logger="log")
 
-        F_val = np.zeros(elements+1)
-        M_val = np.zeros(elements+1)
         F_val, M_val = udl_vdl_point_force_solver(UDL_val, UVL_val, point_force_val, moment_val, L_val)
 
         element_data_val = np.zeros((elements, 4))
         temp_val = 1
         col_temp = 0
         for i in range(elements):
-            for j in range(temp_val, temp_val+4, 1):
+            for j in range(temp_val, temp_val + 4, 1):
                 element_data_val[i][col_temp] = j
                 col_temp += 1
             temp_val += 2
@@ -214,7 +200,9 @@ def run_checks_and_solve(sender, data):
 
             node = 1
             for i in range(0, len(F_M_result), 2):
-                add_row("Results table", [str(node), f"{F_M_result[i][0]:.5}", f"{F_M_result[i+1][0]:.5}", f"{Q_result[i][0]:.5}", f"{Q_result[i+1][0]:.5}"])
+                add_row("Results table",
+                        [str(node), f"{F_M_result[i][0]:.5}", f"{F_M_result[i + 1][0]:.5}", f"{Q_result[i][0]:.5}",
+                         f"{Q_result[i + 1][0]:.5}"])
                 node += 1
             del node
 
@@ -222,12 +210,12 @@ def run_checks_and_solve(sender, data):
             log_info("---- Solver terminated ----", logger="log")
 
         except:
-            log_error("An exception has occurred while solving. Please check the values entered and try again.", logger="log")
+            log_error("An exception has occurred while solving. Please check the values entered and try again.",
+                      logger="log")
             log_info("--- Solver terminated without a solution. ---", logger="log")
 
 
 def generate_tables(sender, data):
-
     if get_value("Number of elements") < 1:
         log_warning("Number of elements cannot be less than 1!", logger="log")
         configure_item("Solve!", enabled=False, tip="Number of elements cannot be less than 1.")
@@ -246,16 +234,19 @@ def generate_tables(sender, data):
 
 
 def add_material_table():
-
     if does_item_exist("2. Material properties"):
         delete_item("2. Material properties")
 
-        with window("2. Material properties", x_pos=10, y_pos=90, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=450, height=237):
+        with window("2. Material properties", x_pos=10, y_pos=90, no_resize=True, no_move=True, no_collapse=True,
+                    no_close=True, width=450, height=237):
             add_spacing(count=2)
-            add_checkbox("same_mat", label=" Material is uniform throughout", tip="If the material is uniform throughout, entering the\nE and I values only in the Element No. 1 row is enough.")
+            add_checkbox("same_mat", label=" Material is uniform throughout",
+                         tip="If the material is uniform throughout, entering the\nE and I values only in the Element "
+                             "No. 1 row is enough.")
             add_spacing(count=2)
             mat_table = SmartTable("material_table")
-            mat_table.add_header(["Element No.", "Young's modulus (E)", "Area moment of inertia (I)", "Length of element (L)"])
+            mat_table.add_header(
+                ["Element No.", "Young's modulus (E)", "Area moment of inertia (I)", "Length of element (L)"])
 
             for i in range(get_value("Number of elements")):
                 mat_table.add_row([str(i + 1), "", "", ""])
@@ -311,7 +302,7 @@ def add_point_load_table():
         point_table = SmartTable("point_load_table")
         point_table.add_header(["Node No.", "Point force value"])
 
-        for i in range(get_value("Number of elements")+1):
+        for i in range(get_value("Number of elements") + 1):
             point_table.add_row([str(i + 1), ""])
 
 
@@ -324,7 +315,7 @@ def add_moment_table():
         moment_table = SmartTable("moment_table")
         moment_table.add_header(["Node No.", "Moment value"])
 
-        for i in range(get_value("Number of elements")+1):
+        for i in range(get_value("Number of elements") + 1):
             moment_table.add_row([str(i + 1), ""])
 
 
@@ -345,7 +336,8 @@ def switch_theme(sender, data):
     if sender == "dark_mode":
 
         delete_item("dark_mode")
-        add_image_button("light_mode", "icons/light_mode.png", width=23, height=23, tip="Light mode", parent="Extras", callback=switch_theme)
+        add_image_button("light_mode", "icons/light_mode.png", width=23, height=23, tip="Light mode", parent="Extras",
+                         callback=switch_theme)
 
         set_theme("Grey")
         set_main_window_title("1D Beam Element 2 DOF FEM Solver")
@@ -387,7 +379,8 @@ def switch_theme(sender, data):
 
     else:
         delete_item("light_mode")
-        add_image_button("dark_mode", "icons/dark_mode.png", width=23, height=23, tip="Dark mode", parent="Extras", callback=switch_theme)
+        add_image_button("dark_mode", "icons/dark_mode.png", width=23, height=23, tip="Dark mode", parent="Extras",
+                         callback=switch_theme)
 
         set_theme("Light")
         set_main_window_title("1D Beam Element 2 DOF FEM Solver")
@@ -467,13 +460,18 @@ with window("Main"):
     set_style_curve_tessellation_tolerance(1.25)
     set_style_circle_segment_max_error(1.60)
 
-with window("1. Discretization", x_pos=10, y_pos=10, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=450, height=70):
+with window("1. Discretization", x_pos=10, y_pos=10, no_resize=True, no_move=True, no_collapse=True, no_close=True,
+            width=450, height=70):
     add_spacing(count=2)
-    add_input_int("Number of elements", default_value=1, callback=generate_tables, tip="Number of elements should always be greater than or equal to 1.")
+    add_input_int("Number of elements", default_value=1, callback=generate_tables,
+                  tip="Number of elements should always be greater than or equal to 1.")
 
-with window("2. Material properties", x_pos=10, y_pos=90, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=450, height=237):
+with window("2. Material properties", x_pos=10, y_pos=90, no_resize=True, no_move=True, no_collapse=True, no_close=True,
+            width=450, height=237):
     add_spacing(count=2)
-    add_checkbox("same_mat", label=" Material is uniform throughout", tip="If the material is uniform throughout, entering the\nE and I values only in the Element No. 1 row is enough.")
+    add_checkbox("same_mat", label=" Material is uniform throughout",
+                 tip="If the material is uniform throughout, entering the\nE and I values only in the Element No. 1 "
+                     "row is enough.")
     add_spacing(count=2)
     mat_table = SmartTable("material_table")
     mat_table.add_header(["Element No.", "Young's modulus (E)", "Area moment of inertia (I)", "Length of element (L)"])
@@ -481,7 +479,8 @@ with window("2. Material properties", x_pos=10, y_pos=90, no_resize=True, no_mov
     for i in range(get_value("Number of elements")):
         mat_table.add_row([str(i + 1), "", "", ""])
 
-with window("3. Boundary conditions", x_pos=10, y_pos=337, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=450, height=237):
+with window("3. Boundary conditions", x_pos=10, y_pos=337, no_resize=True, no_move=True, no_collapse=True,
+            no_close=True, width=450, height=237):
     add_spacing(count=2)
     add_tab_bar("BC Data")
 
@@ -510,8 +509,8 @@ with window("3. Boundary conditions", x_pos=10, y_pos=337, no_resize=True, no_mo
     uvl_table.add_header(["Element No.", "Node No.", "UVL Pressure value"])
 
     for i in range(get_value("Number of elements")):
-        uvl_table.add_row([str(i + 1), "flag_1", str(i+1)])
-        uvl_table.add_row([str(i + 1), "flag_1", str(i+2)])
+        uvl_table.add_row([str(i + 1), "flag_1", str(i + 1)])
+        uvl_table.add_row([str(i + 1), "flag_1", str(i + 2)])
 
     add_tab("Point loads", parent="BC Data")
     add_spacing(count=2)
@@ -531,10 +530,12 @@ with window("3. Boundary conditions", x_pos=10, y_pos=337, no_resize=True, no_mo
     for i in range(get_value("Number of elements") + 1):
         moment_table.add_row([str(i + 1), ""])
 
-with window("Diagram", x_pos=10, y_pos=584, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=450, height=46, no_title_bar=True):
+with window("Diagram", x_pos=10, y_pos=584, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=450,
+            height=46, no_title_bar=True):
     add_button("Generate diagram", width=442, height=36, tip="Feature still in development.", enabled=False)
 
-with window("Solve", x_pos=10, y_pos=640, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=450, height=46, no_title_bar=True):
+with window("Solve", x_pos=10, y_pos=640, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=450,
+            height=46, no_title_bar=True):
     add_button("Solve!", width=442, height=36)
     add_popup("Solve!", 'Confirmation Window', modal=True, mousebutton=mvMouseButton_Left)
     add_text("Are you sure you want to solve?")
@@ -542,14 +543,19 @@ with window("Solve", x_pos=10, y_pos=640, no_resize=True, no_move=True, no_colla
     add_same_line(spacing=10)
     add_button("No", width=150, callback=close_confirmation)
 
-with window("Results", x_pos=470, y_pos=10, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=755, height=361):
-    add_table("Results table", ["Node No.", "Equivalent\nForce", "Equivalent\nMoment", "Displacement", "Rotation\n(radians)"], width=735, height=212)
+with window("Results", x_pos=470, y_pos=10, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=755,
+            height=361):
+    add_table("Results table",
+              ["Node No.", "Equivalent\nForce", "Equivalent\nMoment", "Displacement", "Rotation\n(radians)"], width=735,
+              height=212)
 
-with window("Logger", x_pos=470, y_pos=381, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=805, height=305):
+with window("Logger", x_pos=470, y_pos=381, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=805,
+            height=305):
     add_logger("log", log_level=0, auto_scroll=True)
     log("Welcome to the 1D beam element 2 DOF FEM Solver!", logger="log")
 
-with window("Extras", x_pos=1230, y_pos=10, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=43, height=80, no_title_bar=True):
+with window("Extras", x_pos=1230, y_pos=10, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=43,
+            height=80, no_title_bar=True):
     add_image_button("Help", "icons/help.png", width=23, height=23, tip="Get more information on GitHub.")
     add_spacing()
     add_separator()
@@ -572,6 +578,5 @@ with window("Extras", x_pos=1230, y_pos=10, no_resize=True, no_move=True, no_col
     add_same_line(spacing=5)
     add_button("Get more info on GitHub", width=250, callback=close_info_window)
     add_spacing(count=2)
-
 
 start_dearpygui(primary_window="Main")

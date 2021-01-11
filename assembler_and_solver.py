@@ -149,6 +149,9 @@ def solve(element_data, E, I, L, Q, F, M):
     return F_before_elimination, global_Q
 
 
+#Test values
+
+
 '''element_data_test = np.array([[1,2,3,4], [3,4,5,6]])
 E_test = np.array(["210e9", "210e9"]).astype(float)     #Pa
 I_test = np.array(["2e-6", "2e-6"]).astype(float)       #m^4
