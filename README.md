@@ -22,7 +22,7 @@ Then, run the <i>Beam_element_FEM_solver.py</i> file.
 3. The user has to make sure the values entered have the correct units. The software does not convert any values entered. Results are obtained based on the values that are entered without converting them to different units. In the following examples, the displacements are in mm and stresses are in MPa.</b></i>
 
 
-<H3>Example Problem</H3>
+<H2>Example Problem</H2>
 
 ![Example Diagram](images/Example_1_diag.jpg)
 
@@ -51,6 +51,8 @@ Enter the respective values of the material properties and boundary conditions.
 
 Hit the solve button.
 
+<b><i>Note: Generate Diagram feature is still under development.</i></b>
+
 <H4>Step 4:</H4>
 
 Ensure no errors are shown in the log window.
@@ -62,3 +64,8 @@ Analyse the results in the results window.
 <b><i>Note: All units are in SI units in this example.</i></b>
 
 ![Example Results](images/Example_1_6.jpg)
+
+
+<H2>Recommended flow of windows</H2>
+
+![Recommended flow](images/flow.jpg)
