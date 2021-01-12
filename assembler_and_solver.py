@@ -64,6 +64,8 @@ def assemble_stiffness_matrix(element_keys, K, global_mat):
 
 
 def solve(element_data, E, I, L, Q, F, M):
+    print("Solver initiated...")
+
     elements = element_data.shape[0]
     nodes = (elements + 1) * 2
 
@@ -145,6 +147,8 @@ def solve(element_data, E, I, L, Q, F, M):
 
     print("\n The global displacement vector with all the known and unknown values is:")
     print(global_Q)
+
+    print("Solver terminated.")
 
     return F_before_elimination, global_Q
 

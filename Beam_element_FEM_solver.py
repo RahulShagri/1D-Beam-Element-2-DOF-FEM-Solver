@@ -546,7 +546,7 @@ with window("Solve", x_pos=10, y_pos=640, no_resize=True, no_move=True, no_colla
 with window("Results", x_pos=470, y_pos=10, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=755,
             height=361):
     add_table("Results table",
-              ["Node No.", "Equivalent\nForce", "Equivalent\nMoment", "Displacement", "Rotation\n(radians)"], width=735,
+              ["Node No.", "Equivalent\nForce", "Equivalent\nMoment", "Displacement", "Rotation\n(radians)"], width=740,
               height=212)
 
 with window("Logger", x_pos=470, y_pos=381, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=805,

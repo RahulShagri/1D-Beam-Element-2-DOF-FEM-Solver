@@ -19,6 +19,9 @@ class SmartTable:
         with managed_columns(f"{self.name}_head", len(header), border=False, parent=self.parent_value):
             for item in header:
                 add_text(item)
+            add_separator()
+            add_separator()
+            add_spacing(count=2)
 
     def add_row(self, row_content: List[Any]):
         with managed_columns(f"{self.name}_{self.row}", len(row_content), border=False, parent=self.parent_value):
