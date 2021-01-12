@@ -68,4 +68,4 @@ Analyse the results in the results window.
 
 <H2>Recommended flow of windows</H2>
 
-![Recommended flow](images/flow.jpg)
+![Recommended flow](images/Flow.jpg)
