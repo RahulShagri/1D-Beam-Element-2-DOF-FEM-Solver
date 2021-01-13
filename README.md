@@ -8,12 +8,17 @@ This solver can be used to analyse 2 degrees of freedom of 1 dimension problems 
 
 <H1>Instructions</H1>
 
-Ensure you have the following libraries installed in python before you run the solver:
-    
-1. NumPy 
-2. DearPyGUI 
+1. Make sure you have Python 3 installed and working. 
    
-Then, run the <i>Beam_element_FEM_solver.py</i> file.
+2. Clone the repo:
+
+```git clone https://github.com/RahulShagri/1D-Beam-Element-2-DOF-FEM-Solver.git```
+
+3. Install prerequisites using pip, preferably in a new environment:
+
+```pip install -r requirements.txt``` 
+
+4. Run the <i>Beam_element_FEM_solver.py</i> file.
 
 <i><b>Points to note:
 
@@ -69,3 +74,8 @@ Analyse the results in the results window.
 <H2>Recommended flow of windows</H2>
 
 ![Recommended flow](images/Flow.jpg)
+
+
+<H2>Contact</H2>
+
+You can contact me using the messaging form or the emailing option on my [engineering portfolio website](https://rahulshagri.github.io/).
