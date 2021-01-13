@@ -1,9 +1,9 @@
-# 1 Dimension 2 Degrees of Freedom Beam Element FEM Solver
+# 1 Dimensional Beam Element with 2 Degrees of Freedom FEM Solver
 
 
 <H1>About</H1>
 
-This solver can be used to analyse 2 degrees of freedom of 1 dimension problems with beam elements connected in series and having 1D forces acting perpendicular to the axis of the beam. It uses the direct stiffness method and assembles the global nodal force vector, global element stiffness matrix, and the global nodal displacement vector and uses the elimination approach on the global relationship after applying all the boundary conditions provided by the user to solve for the unknown nodal displacements and slopes.
+This solver can be used to analyse 2 degrees of freedom of 1 dimensional problems with beam elements connected in series and having 1D forces acting perpendicular to the axis of the beam. It uses the direct stiffness method and assembles the global nodal force vector, global element stiffness matrix, and the global nodal displacement vector and uses the elimination approach on the global relationship after applying all the boundary conditions provided by the user to solve for the unknown nodal displacements and slopes.
 
 
 <H1>Instructions</H1>
