@@ -556,7 +556,7 @@ with window("Logger", x_pos=470, y_pos=381, no_resize=True, no_move=True, no_col
 
 with window("Extras", x_pos=1230, y_pos=10, no_resize=True, no_move=True, no_collapse=True, no_close=True, width=43,
             height=80, no_title_bar=True):
-    add_image_button("Help", "icons/help.png", width=23, height=23, tip="Get more information on GitHub.")
+    add_image_button("Help", "icons/help.png", width=23, height=23)
     add_spacing()
     add_separator()
     add_spacing()
